@@ -1,0 +1,43 @@
+{
+  "name": "vuex-loading",
+  "version": "1.0.0",
+  "description": "Loading indicator plugin for Vuex",
+  "keywords": [
+    "vuex",
+    "loading",
+    "plugin"
+  ],
+  "homepage": "https://github.com/maiwenan/vuex-wait",
+  "bugs": {
+    "url": "git+https://github.com/maiwenan/vuex-wait/issues"
+  },
+  "license": "MIT",
+  "author": "maiwenan <maiwenan@gmail.com>",
+  "files": [
+    "dist",
+    "src/typings.d.ts"
+  ],
+  "main": "dist/vuex-loading.cjs.js",
+  "module": "dist/vuex-loading.esm.js",
+  "browser": "dist/vuex-loading.umd.js",
+  "types": "src/typings.d.ts",
+  "scripts": {
+    "clean:dist": "npx rimraf dist",
+    "clean:build": "npx rimraf build",
+    "clean": "npm run clean:dist & npm run clean:build",
+    "build": "NODE_ENV=production npm run clean && rollup -c"
+  },
+  "devDependencies": {
+    "rimraf": "^2.6.3",
+    "rollup": "^1.0.2",
+    "rollup-plugin-commonjs": "^9.2.0",
+    "rollup-plugin-replace": "^2.1.0",
+    "rollup-plugin-typescript": "^1.0.0",
+    "rollup-plugin-uglify": "^6.0.0",
+    "typescript": "^3.2.2",
+    "uglify-es": "^3.3.9"
+  },
+  "peerDependencies": {
+    "vuex": ">=3.1.0"
+  }
+}
