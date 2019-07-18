@@ -1,7 +1,8 @@
 # vuex-wait
 
 Adds loading state for actions to [Vuex](https://github.com/vuejs/vuex) automatically. 
-You don't need to maintain asynchronous action state any more
+You don't need to maintain asynchronous action state any more.
+Inspired by [dva-loading](https://github.com/dvajs/dva-loading).
 
 
 ## Install
