@@ -19,7 +19,7 @@ const config = {
 	],
 	output: [
 		{
-			name: 'VuexLoading',
+			name: 'VuexWait',
 			file: pkg.browser,
 			format: 'umd',
 			exports: 'named',

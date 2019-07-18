@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import createLoading from '../../../src/index';
+// import createLoading from '../../../dist/vuex-wait.esm.js';
 
 Vue.use(Vuex);
 

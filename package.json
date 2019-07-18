@@ -1,5 +1,5 @@
 {
-  "name": "vuex-loading",
+  "name": "vuex-wait",
   "version": "1.0.0",
   "description": "Loading indicator plugin for Vuex",
   "keywords": [
@@ -17,9 +17,9 @@
     "dist",
     "src/typings.d.ts"
   ],
-  "main": "dist/vuex-loading.cjs.js",
-  "module": "dist/vuex-loading.esm.js",
-  "browser": "dist/vuex-loading.umd.js",
+  "main": "dist/vuex-wait.cjs.js",
+  "module": "dist/vuex-wait.esm.js",
+  "browser": "dist/vuex-wait.umd.js",
   "types": "src/typings.d.ts",
   "scripts": {
     "clean:dist": "npx rimraf dist",
