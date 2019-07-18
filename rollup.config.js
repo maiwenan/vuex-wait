@@ -1,6 +1,5 @@
 import replace from 'rollup-plugin-replace';
 import uglify from 'rollup-plugin-uglify';
-import commonJs from 'rollup-plugin-commonjs';
 import typescript from 'rollup-plugin-typescript';
 import { minify } from 'uglify-es';
 
