@@ -7,7 +7,6 @@
       "moduleResolution": "node",
   },
   "files": [
-    "src/index.ts",
-    "src/typings.d.ts"
+    "src/index.ts"
   ]
 }

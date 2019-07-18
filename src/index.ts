@@ -1,28 +1,14 @@
 
-// state.loading.actions.app.copyVersion
 
-const module = {
-  namespaced: true,
-  state: {
-    actions: {}
-  },
-  mutations: {
-    loading(state, payload) {
-      const {
-        type,
-        loading
-      } = payload;
-      const actions = {
-        ...state.actions
-      };
-      set(actions, type, loading);
-
-      state.actions = actions;
-    }
-  }
+export interface LoadingConfig {
+	name?: string
 };
 
-const set = (data, namespace, value) => {
+const num2bool = (num: number) => {
+  return num > 0;
+}
+
+const set = (data: any, namespace: string, value: boolean) => {
   const names = namespace.split('/');
   const len = names.length - 1;
 
@@ -44,58 +30,93 @@ const set = (data, namespace, value) => {
   return data;
 };
 
-const validateConfig = config => {
-  if (config.name && typeof config.name !== 'string') {
-    throw new Error('loading plugin config name must be a string');
-  }
+const setModuleAction = (actionState: any, module: any, basePath: string) => {
+  const {
+    actions,
+    modules
+  } = module;
 
-  if (config.asNumber && typeof config.asNumber !== 'boolean') {
-    throw new Error('loading plugin config asNumber must be a boolean');
-  }
-
-  if (config.whitelist && !Array.isArray(config.whitelist)) {
-    throw new Error('loading plugin config whitelist must be an array of strings');
-  }
-
-  if (config.blacklist && !Array.isArray(config.blacklist)) {
-    throw new Error('loading plugin config blacklist must be an array of strings');
-  }
-
-  if (config.whitelist && config.blacklist) {
-    throw new Error('loading plugin config cannot have both a whitelist & a blacklist');
-  }
-};
-
-const createActionHook = (store, moduleName, status) => {
-  return (action, state) => {
-    store.commit(`${moduleName}/loading`, {
-      type: action.type,
-      loading: status
+  Object.keys(actions).forEach((key: string) => {
+    set(actionState, `${basePath}/${key}`, false);
+  });
+  if (modules) {
+    Object.keys(modules).forEach((key: string) => {
+      setModuleAction(actionState, modules[key], `${basePath}/${key}`);
     });
-  };
+  }
+
+  return actionState;
 };
 
-export default config => {
+const validateConfig = (config: LoadingConfig) => {
+  if (config.name && typeof config.name !== 'string') {
+    throw new Error('vuex-wait plugin config name must be a string');
+  }
+};
+
+export default (config: LoadingConfig = {}) => {
   validateConfig(config);
 
+  let global = 0;
   const moduleName = config.name || 'loading';
+  const module = {
+    namespaced: true,
+    state: {
+      global: num2bool(global),
+      actions: {}
+    },
+    mutations: {
+      loading(state: any, payload: any) {
+        const {
+          type,
+          loading,
+          global
+        } = payload;
+        const actions = {
+          ...state.actions
+        };
+  
+        set(actions, type, loading);
+        state.actions = actions;
+        state.global = num2bool(global);
+      }
+    }
+  };
+  const createActionHook = (store: any, moduleName: string, status: boolean) => {
+    return (action: any) => {
+      global += status ? 1 : -1;
+      store.commit(`${moduleName}/loading`, {
+        type: action.type,
+        loading: status,
+        global
+      });
+    };
+  };
 
-  return store => {
+  return (store: any) => {
+    // initialize actions loading state
+    Object.keys(store._actions).forEach((key: string) => {
+      set(module.state.actions, key, false);
+    });
+
     // register loading module
     store.registerModule(moduleName, module);
 
     // add hook to registerModule
     const registerModule = store.registerModule.bind(store);
 
-    store.registerModule = (apth, module, options) => {
+    store.registerModule = (path: any, module: object, options?: object) => {
+      const state = store.state;
+      const basePath = typeof path === 'string' ? path : path.join('/');
 
-      return registerModule(apth, module, options);
+      setModuleAction(state[moduleName].actions, module, basePath);
+      return registerModule(path, module, options);
     };
 
     // listen actions hook
     store.subscribeAction({
       before: createActionHook(store, moduleName, true),
-      after: createActionHook(store, moduleName, true)
+      after: createActionHook(store, moduleName, false)
     });
   };
 };
