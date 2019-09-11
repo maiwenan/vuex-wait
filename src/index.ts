@@ -113,10 +113,30 @@ export default (config: LoadingConfig = {}) => {
       return registerModule(path, module, options);
     };
 
+    const before = createActionHook(store, moduleName, true);
+    const after = createActionHook(store, moduleName, false);
+    const dispatch = store.dispatch.bind(store);
+
+    // override dispatch function
+    store.dispatch = (...args: any[]) => {
+      let [ action ] = args;
+
+      action = typeof action === 'string' ? { type: action } : action;
+
+      before(action);
+      return dispatch(...args).then((res: any) => {
+        after(action);
+        return res;
+      }, (err: any) => {
+        after(action);
+        throw err;
+      });
+    };
+
     // listen actions hook
-    store.subscribeAction({
-      before: createActionHook(store, moduleName, true),
-      after: createActionHook(store, moduleName, false)
-    });
+    // store.subscribeAction({
+    //   before: createActionHook(store, moduleName, true),
+    //   after: createActionHook(store, moduleName, false)
+    // });
   };
 };
