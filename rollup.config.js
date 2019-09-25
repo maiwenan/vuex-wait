@@ -1,6 +1,6 @@
 import replace from 'rollup-plugin-replace';
 import uglify from 'rollup-plugin-uglify';
-import typescript from 'rollup-plugin-typescript';
+import typescript from 'rollup-plugin-typescript2';
 import { minify } from 'uglify-es';
 
 const pkg = require('./package.json');
@@ -11,7 +11,8 @@ const config = {
 	input: 'src/index.ts',
 	plugins: [
 		typescript({
-			typescript: require('typescript')
+			useTsconfigDeclarationDir: true
+			// typescript: require('typescript')
 		}),
 		replace({
 			'process.env.NODE_ENV': JSON.stringify(env)
@@ -26,8 +27,7 @@ const config = {
 			sourcemap: true
 		},
 		{ file: pkg.main, format: 'cjs', exports: 'named', sourcemap: true }, // CommonJS Modules
-		{ file: pkg.module, format: 'es', exports: 'named', sourcemap: true }, // ES Modules
-		{ file: pkg.types, format: 'es' }
+		{ file: pkg.module, format: 'es', exports: 'named', sourcemap: true } // ES Modules
 	]
 }
 
